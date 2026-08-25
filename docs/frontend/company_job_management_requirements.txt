@@ -1,0 +1,502 @@
+GIT CareerAI – COMPANY JOB MANAGEMENT MODULE
+FRONTEND REQUIREMENTS
+
+Project:
+GIT CareerAI – AI-Powered Career & Placement Intelligence Platform
+
+Module:
+Company Job Management
+
+Purpose:
+Develop the frontend module that allows a company to create job postings, manage existing jobs, and view complete job details.
+
+IMPORTANT:
+- Follow the existing Student Module and Company Dashboard UI design.
+- Use React.js and Tailwind CSS.
+- Use React Router for navigation.
+- Use mock/dummy data for now.
+- No backend/API integration is required at this stage.
+- Keep the frontend ready for future backend integration.
+- Make all pages responsive.
+- Use reusable components.
+- Do not unnecessarily modify the completed Student Module.
+
+==================================================
+1. MODULE FLOW
+==================================================
+
+Company Dashboard
+      ↓
+Manage Jobs
+      ↓
+View Existing Jobs
+      ↓
+Create / Edit / View Job
+      ↓
+Job Details
+      ↓
+View Applicants
+
+==================================================
+2. REQUIRED ROUTES
+==================================================
+
+/company/jobs
+/company/jobs/create
+/company/jobs/:id
+/company/jobs/:id/edit
+
+==================================================
+3. MANAGE JOBS PAGE
+==================================================
+
+Route:
+/company/jobs
+
+Page title:
+"Manage Jobs"
+
+Purpose:
+Allow the company to view and manage all jobs posted by the company.
+
+Display jobs in a responsive table on desktop.
+
+Columns:
+- Job Title
+- Location
+- Job Type
+- Applicants
+- Eligible Candidates
+- Deadline
+- Status
+- Actions
+
+Example:
+Java Developer | Mumbai | Full Time | 42 | 30 | 30 Sep 2026 | Active
+Frontend Developer | Pune | Full Time | 28 | 20 | 25 Sep 2026 | Active
+Backend Developer | Bangalore | Full Time | 15 | 10 | 20 Sep 2026 | Closed
+
+==================================================
+4. JOB STATUS
+==================================================
+
+Possible statuses:
+- Active
+- Closed
+- Draft
+
+Use clear visual badges and follow the existing project's design system.
+
+==================================================
+5. JOB ACTIONS
+==================================================
+
+Each job should have:
+- View
+- Edit
+- Delete
+- Close Applications
+
+Optional:
+- View Applicants
+
+View:
+ /company/jobs/:id
+
+Edit:
+ /company/jobs/:id/edit
+
+Delete:
+Show confirmation modal before deleting.
+
+Close Applications:
+Show confirmation dialog before changing status to Closed.
+
+==================================================
+6. SEARCH AND FILTER
+==================================================
+
+Add:
+- Search by job title or location
+- Filter by status
+- Filter by job type
+
+Optional sorting:
+- Latest Posted
+- Deadline
+- Number of Applicants
+
+Use mock data for filtering and sorting.
+
+==================================================
+7. CREATE JOB PAGE
+==================================================
+
+Route:
+/company/jobs/create
+
+Page title:
+"Post a New Job"
+
+A. BASIC JOB INFORMATION
+
+Fields:
+- Job Title
+- Job Description
+- Location
+- Job Type
+- Salary / Package
+- Application Deadline
+
+Job Type options:
+- Full Time
+- Part Time
+- Internship
+- Contract
+
+B. REQUIRED SKILLS
+
+Allow the company to add multiple skills.
+
+Example:
+Java
+SQL
+Spring Boot
+REST API
+Git
+
+Use a tag/chip input or multi-select.
+
+C. ELIGIBILITY CRITERIA
+
+Company should define:
+- Minimum CGPA
+- Eligible Branches
+- Graduation Year
+- Maximum Backlogs
+
+Example:
+Minimum CGPA: 7.0
+Eligible Branches: Computer Engineering, Information Technology
+Graduation Year: 2027
+Maximum Backlogs: 0
+
+D. OTHER REQUIREMENTS
+
+Optional text area for additional requirements.
+
+==================================================
+8. FORM VALIDATION
+==================================================
+
+Required:
+- Job Title
+- Job Description
+- Location
+- Job Type
+- Required Skills
+- Minimum CGPA
+- Eligible Branches
+- Graduation Year
+- Application Deadline
+
+Validation examples:
+- Job title cannot be empty.
+- Job description cannot be empty.
+- Minimum CGPA must be valid.
+- At least one branch must be selected.
+- At least one skill must be added.
+- Application deadline must be valid.
+
+Show clear validation messages near fields.
+
+==================================================
+9. CREATE JOB BUTTONS
+==================================================
+
+Buttons:
+[ Save as Draft ] [ Post Job ]
+
+Save as Draft:
+Save mock job with status "Draft".
+
+Post Job:
+Save mock job with status "Active".
+Show success message:
+"Job posted successfully."
+
+Navigate to Manage Jobs or Job Details after posting.
+
+==================================================
+10. JOB DETAILS PAGE
+==================================================
+
+Route:
+/company/jobs/:id
+
+Display:
+- Job Title
+- Company Name
+- Location
+- Job Type
+- Salary / Package
+- Posted Date
+- Application Deadline
+- Status
+- Complete Job Description
+- Required Skills
+- Eligibility Criteria
+
+JOB STATISTICS:
+- Total Applicants
+- Eligible Candidates
+- Not Eligible Candidates
+- Shortlisted Candidates
+
+Actions:
+- Edit Job
+- Close Applications
+- Delete Job
+- View Applicants
+
+==================================================
+11. EDIT JOB PAGE
+==================================================
+
+Route:
+/company/jobs/:id/edit
+
+Pre-fill existing job data.
+
+Editable fields:
+- Job Title
+- Description
+- Location
+- Job Type
+- Salary / Package
+- Deadline
+- Required Skills
+- Minimum CGPA
+- Branches
+- Graduation Year
+- Maximum Backlogs
+- Other Requirements
+
+Button:
+"Save Changes"
+
+Show:
+"Job updated successfully."
+
+==================================================
+12. DELETE JOB
+==================================================
+
+Show confirmation modal:
+
+"Are you sure you want to delete this job?"
+
+Buttons:
+[ Cancel ] [ Delete ]
+
+==================================================
+13. CLOSE APPLICATIONS
+==================================================
+
+Show confirmation:
+
+"Are you sure you want to close applications for this job?"
+
+After confirmation:
+Active → Closed
+
+==================================================
+14. MOCK DATA
+==================================================
+
+Use mock data for frontend development.
+
+Example:
+
+const jobs = [
+  {
+    id: 1,
+    title: "Java Developer",
+    description: "Looking for a Java developer...",
+    location: "Mumbai",
+    jobType: "Full Time",
+    salary: "6-8 LPA",
+    deadline: "2026-09-30",
+    postedDate: "2026-08-20",
+    status: "Active",
+    applicants: 42,
+    eligibleCandidates: 30,
+    notEligibleCandidates: 12,
+    shortlistedCandidates: 8,
+    requiredSkills: ["Java", "SQL", "Spring Boot", "REST API", "Git"],
+    minCGPA: 7.0,
+    branches: ["Computer Engineering", "Information Technology"],
+    graduationYear: 2027,
+    maxBacklogs: 0,
+    otherRequirements: "Good communication skills."
+  }
+];
+
+==================================================
+15. SUGGESTED COMPONENTS
+==================================================
+
+CompanyJobManagement/
+  ManageJobs.jsx
+  CreateJob.jsx
+  EditJob.jsx
+  JobDetails.jsx
+
+components/
+  JobCard.jsx
+  JobTable.jsx
+  JobForm.jsx
+  SkillInput.jsx
+  EligibilityForm.jsx
+  JobStatusBadge.jsx
+  DeleteConfirmationModal.jsx
+  CloseJobModal.jsx
+  SearchFilter.jsx
+
+Adapt the structure if the existing project follows a different convention.
+
+==================================================
+16. RESPONSIVE DESIGN
+==================================================
+
+Must work on:
+- Desktop
+- Laptop
+- Tablet
+- Mobile
+
+On mobile:
+- Tables should scroll horizontally or become cards.
+- Forms should use a single-column layout.
+- Buttons must remain accessible.
+- No content should overflow.
+- Sidebar should remain collapsible.
+
+==================================================
+17. UI/UX REQUIREMENTS
+==================================================
+
+Maintain the existing GIT CareerAI frontend design.
+
+Use:
+- Clear headings
+- Consistent spacing
+- Reusable buttons
+- Proper form labels
+- Validation messages
+- Status badges
+- Confirmation modals
+- Success/error messages
+- Loading state if appropriate
+- Empty states
+
+Empty jobs example:
+"No jobs posted yet."
+Button:
+"+ Post Your First Job"
+
+==================================================
+18. FRONTEND → BACKEND READY
+==================================================
+
+The frontend should later support APIs for:
+- Create Job
+- Get Jobs
+- Get Job by ID
+- Update Job
+- Delete Job
+- Close Job
+
+Do not hardcode job data in multiple components.
+
+The UI should not require a complete redesign when APIs are integrated.
+
+==================================================
+19. IMPORTANT PROJECT LOGIC
+==================================================
+
+Job requirements entered by the company will later be used for:
+
+1. Student eligibility checking
+2. ATS / compatibility score calculation
+3. Candidate matching
+
+Eligibility criteria:
+- Minimum CGPA
+- Branch
+- Graduation Year
+- Maximum Backlogs
+
+Required skills and Job Description will later be used for ATS/compatibility analysis.
+
+Example:
+Job: Java Developer
+Required Skills: Java, SQL, Spring Boot, REST API
+Minimum CGPA: 7.0
+Eligible Branch: Computer Engineering
+
+==================================================
+20. ACCEPTANCE CRITERIA
+==================================================
+
+[ ] Manage Jobs page implemented
+[ ] Jobs displayed using mock data
+[ ] Search works
+[ ] Status filter works
+[ ] Job type filter works
+[ ] Create Job page implemented
+[ ] All required job fields available
+[ ] Multiple required skills can be added
+[ ] Eligibility criteria can be entered
+[ ] Form validation works
+[ ] Save as Draft works
+[ ] Post Job works
+[ ] Job Details page implemented
+[ ] Edit Job page implemented
+[ ] Delete confirmation works
+[ ] Close Applications confirmation works
+[ ] Job status updates visually
+[ ] View Applicants button present
+[ ] Responsive design works
+[ ] Existing UI design maintained
+[ ] No backend/API integration required
+[ ] Student Module remains unaffected
+
+==================================================
+21. GIT
+==================================================
+
+Suggested branch:
+feature/company-job-management
+
+Suggested commit message:
+Add company job management module
+
+==================================================
+22. NEXT MODULE
+==================================================
+
+After completing Company Job Management, develop:
+
+COMPANY APPLICANTS & CANDIDATE DETAILS
+
+Flow:
+Company Dashboard
+→ Manage Jobs
+→ Select Job
+→ View Applicants
+→ Candidate Details
+→ ATS Score
+→ Eligibility
+→ View Resume
+→ Shortlist / Reject
