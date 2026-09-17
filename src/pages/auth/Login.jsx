@@ -3,20 +3,23 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout.jsx";
 import FormField from "../../components/ui/FormField.jsx";
 import Button from "../../components/ui/Button.jsx";
+import RoleSelector from "../../components/ui/RoleSelector.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { validateEmail, validatePassword } from "../../utils/validators.js";
+import { getDashboardPathForRole, ROLES } from "../../utils/roles.js";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isLoading, error, clearError } = useAuth();
 
+  const [accountRole, setAccountRole] = useState(ROLES.STUDENT);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
 
-  const from = location.state?.from || "/dashboard";
+  const from = location.state?.from;
 
   function validateForm() {
     const errors = {
@@ -32,16 +35,34 @@ export default function Login() {
     clearError();
     if (!validateForm()) return;
 
-    const result = await login(email, password);
+    const result = await login(email, password, accountRole);
     if (result.success) {
-      navigate(from, { replace: true });
+      const actualRole = result.user?.role;
+      const home = getDashboardPathForRole(actualRole);
+      const isFromPermitted =
+        from &&
+        from !== "/login" &&
+        ((actualRole === ROLES.ADMIN && from.startsWith("/admin")) ||
+          (actualRole === ROLES.COMPANY && from.startsWith("/company")) ||
+          (actualRole === ROLES.STUDENT &&
+            !from.startsWith("/admin") &&
+            !from.startsWith("/company")));
+      const dest = isFromPermitted ? from : home;
+      navigate(dest, { replace: true });
     }
   }
 
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to continue your career readiness journey."
+      subtitle={
+        accountRole === ROLES.ADMIN
+          ? "Sign in to access college placement cell administration."
+          : accountRole === ROLES.COMPANY
+          ? "Sign in to manage your campus recruitment drives."
+          : "Sign in to continue your career readiness journey."
+      }
+      role={accountRole}
     >
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         {error && (
@@ -53,6 +74,12 @@ export default function Login() {
           </div>
         )}
 
+        <RoleSelector
+          value={accountRole}
+          onChange={setAccountRole}
+          disabled={isLoading}
+        />
+
         <FormField
           id="email"
           label="Email address"
@@ -63,7 +90,13 @@ export default function Login() {
             if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: "" }));
           }}
           error={fieldErrors.email}
-          placeholder="you@git.edu"
+          placeholder={
+            accountRole === ROLES.ADMIN
+              ? "admin@git.edu"
+              : accountRole === ROLES.COMPANY
+              ? "recruiter@tcs.com"
+              : "student@git.edu"
+          }
           autoComplete="email"
           disabled={isLoading}
         />
@@ -96,6 +129,7 @@ export default function Login() {
           </label>
           <Link
             to="/forgot-password"
+            state={{ role: accountRole }}
             className="font-body text-sm text-teal hover:text-teal-dark underline-offset-2 hover:underline"
           >
             Forgot password?
@@ -116,8 +150,12 @@ export default function Login() {
           </Link>
         </p>
 
-        <p className="font-body text-xs text-center text-ink-faint pt-2">
-          Demo: demo@git.edu / password123
+        <p className="font-body text-xs text-center text-ink-faint pt-2 leading-relaxed">
+          Student: student@git.edu / student123
+          <br />
+          Company: recruiter@tcs.com / company123
+          <br />
+          Admin: admin@git.edu / admin123
         </p>
       </form>
     </AuthLayout>

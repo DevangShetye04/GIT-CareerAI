@@ -1,6 +1,16 @@
+import { Link } from "react-router-dom";
 import Card from "./Card.jsx";
 
-export default function StatCard({ label, value, suffix = "", tone = "teal", icon: Icon, note }) {
+export default function StatCard({
+  label,
+  value,
+  suffix = "",
+  tone = "teal",
+  icon: Icon,
+  note,
+  actionLabel,
+  actionTo,
+}) {
   const toneIcon = {
     amber: "bg-amber-soft text-amber",
     teal: "bg-teal-soft text-teal",
@@ -29,6 +39,14 @@ export default function StatCard({ label, value, suffix = "", tone = "teal", ico
         {suffix && <span className="font-body text-sm font-normal text-ink-faint">{suffix}</span>}
       </div>
       {note && <div className={`font-body text-xs mt-1.5 ${toneNote[tone]}`}>{note}</div>}
+      {actionLabel && actionTo && (
+        <Link
+          to={actionTo}
+          className="font-body text-xs text-teal hover:text-teal-dark mt-2 inline-block underline-offset-2 hover:underline"
+        >
+          {actionLabel}
+        </Link>
+      )}
     </Card>
   );
 }

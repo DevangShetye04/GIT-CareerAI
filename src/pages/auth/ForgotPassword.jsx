@@ -1,15 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import AuthLayout from "../../layouts/AuthLayout.jsx";
 import FormField from "../../components/ui/FormField.jsx";
 import Button from "../../components/ui/Button.jsx";
+import RoleSelector from "../../components/ui/RoleSelector.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { validateEmail } from "../../utils/validators.js";
+import { normalizeRole, ROLES } from "../../utils/roles.js";
 
 export default function ForgotPassword() {
+  const location = useLocation();
   const { forgotPassword, isLoading, error, clearError } = useAuth();
 
+  const [accountRole, setAccountRole] = useState(
+    normalizeRole(location.state?.role) || ROLES.STUDENT
+  );
   const [email, setEmail] = useState("");
   const [fieldError, setFieldError] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -23,7 +29,7 @@ export default function ForgotPassword() {
     setFieldError(emailError);
     if (emailError) return;
 
-    const result = await forgotPassword(email);
+    const result = await forgotPassword(email, accountRole);
     if (result.success) {
       setSuccessMessage(result.message);
       setSubmitted(true);
@@ -37,9 +43,12 @@ export default function ForgotPassword() {
           <div className="w-12 h-12 rounded-full bg-teal/15 flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 size={24} className="text-teal" />
           </div>
-          <p className="font-body text-sm text-teal-dark">{successMessage}</p>
+          <p className="font-body text-sm text-teal-dark font-medium">{successMessage}</p>
           <p className="font-body text-xs text-ink-soft mt-2">
-            We sent instructions to <span className="font-medium text-ink">{email}</span>
+            Reset instructions were simulated for <span className="font-medium text-ink">{email}</span>.
+          </p>
+          <p className="font-body text-[11px] text-ink-faint mt-3 bg-card/60 p-2.5 rounded-xl border border-line">
+            Demo Notice: In this frontend evaluation environment, real email delivery is simulated. Your demo credentials remain active and you can sign in directly.
           </p>
         </div>
         <Link
@@ -67,6 +76,13 @@ export default function ForgotPassword() {
           </div>
         )}
 
+        <RoleSelector
+          value={accountRole}
+          onChange={setAccountRole}
+          disabled={isLoading}
+          legend="Account type"
+        />
+
         <FormField
           id="email"
           label="Email address"
@@ -77,7 +93,13 @@ export default function ForgotPassword() {
             if (fieldError) setFieldError("");
           }}
           error={fieldError}
-          placeholder="you@git.edu"
+          placeholder={
+            accountRole === ROLES.ADMIN
+              ? "admin@git.edu"
+              : accountRole === ROLES.COMPANY
+              ? "recruiter@tcs.com"
+              : "student@git.edu"
+          }
           autoComplete="email"
           disabled={isLoading}
         />

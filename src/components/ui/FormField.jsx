@@ -14,6 +14,7 @@ export default function FormField({
   as = "input",
   children,
   className = "",
+  ...rest
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
@@ -42,6 +43,7 @@ export default function FormField({
           aria-invalid={!!error}
           aria-describedby={errorId}
           className={`${baseInputClass} ${borderClass} appearance-none`}
+          {...rest}
         >
           {children}
         </select>
@@ -58,6 +60,7 @@ export default function FormField({
             aria-invalid={!!error}
             aria-describedby={errorId}
             className={`${baseInputClass} ${borderClass} ${isPassword ? "pr-10" : ""}`}
+            {...rest}
           />
           {isPassword && (
             <button

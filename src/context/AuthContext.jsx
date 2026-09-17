@@ -62,12 +62,12 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (email, password, role) => {
     dispatch({ type: "AUTH_START" });
-    const result = await authService.login(email, password);
+    const result = await authService.login(email, password, role);
     if (result.success) {
       dispatch({ type: "AUTH_SUCCESS", payload: { user: result.data.user } });
-      return { success: true };
+      return { success: true, user: result.data.user };
     }
     dispatch({ type: "AUTH_ERROR", payload: result.error });
     return { success: false, error: result.error };
@@ -78,7 +78,7 @@ export function AuthProvider({ children }) {
     const result = await authService.register(payload);
     if (result.success) {
       dispatch({ type: "AUTH_SUCCESS", payload: { user: result.data.user } });
-      return { success: true };
+      return { success: true, user: result.data.user };
     }
     dispatch({ type: "AUTH_ERROR", payload: result.error });
     return { success: false, error: result.error };
@@ -90,9 +90,9 @@ export function AuthProvider({ children }) {
     dispatch({ type: "LOGOUT" });
   }, []);
 
-  const forgotPassword = useCallback(async (email) => {
+  const forgotPassword = useCallback(async (email, role) => {
     dispatch({ type: "AUTH_START" });
-    const result = await authService.forgotPassword(email);
+    const result = await authService.forgotPassword(email, role);
     if (result.success) {
       dispatch({ type: "REQUEST_DONE" });
       return { success: true, message: result.data.message };

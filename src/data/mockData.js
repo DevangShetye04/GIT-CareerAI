@@ -56,8 +56,13 @@ export const STATUS_TONE = {
   Applied: "neutral",
   "Under Review": "amber",
   Shortlisted: "teal",
-  Rejected: "coral",
+  "Interview Scheduled": "teal",
+  "Technical Round": "teal",
   Selected: "teal",
+  "Offer Extended": "teal",
+  "Offer Accepted": "teal",
+  Placed: "teal",
+  Rejected: "coral",
 };
 
 export const BRANCHES = [

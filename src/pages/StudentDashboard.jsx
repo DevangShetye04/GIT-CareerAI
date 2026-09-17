@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChevronRight,
   CheckCircle2,
@@ -19,10 +21,15 @@ import {
   APPLICATIONS,
   STATUS_TONE,
 } from "../data/mockData.js";
+import {
+  getResumeData,
+  getStudentApplications,
+  subscribe,
+} from "../services/studentService.js";
 
 function WelcomeSection() {
   const { user } = useAuth();
-  const name = user?.name || user?.fullName?.split(/\s+/)[0] || "Student";
+  const name = user?.fullName || user?.name || "Bilal Madre";
 
   return (
     <div className="mb-6">
@@ -36,41 +43,96 @@ function WelcomeSection() {
   );
 }
 
-function SummaryCards() {
+function SummaryCards({ resume, applications = [] }) {
+  const hasResume = resume?.hasResume;
+  const score = hasResume ? resume.atsScore : 0;
+  const appCount = applications.length;
+
+  const summary = [
+    {
+      label: "ATS Score",
+      value: hasResume ? String(score) : "—",
+      suffix: hasResume ? "/100" : "",
+      tone: hasResume ? (score >= 80 ? "teal" : "amber") : "coral",
+      icon: SUMMARY[0].icon,
+      note: hasResume ? "Verified for campus drives" : "Upload resume to scan",
+    },
+    {
+      label: "Career Match",
+      value: "Java Backend Developer",
+      suffix: "",
+      tone: "teal",
+      icon: SUMMARY[1].icon,
+      note: "85% alignment",
+    },
+    {
+      label: "Skill Gap",
+      value: "3",
+      suffix: " Skills Missing",
+      tone: "coral",
+      icon: SUMMARY[2].icon,
+      note: "Spring Boot, SQL, AWS",
+    },
+    {
+      label: "Applications Active",
+      value: String(appCount),
+      suffix: " Jobs",
+      tone: "teal",
+      icon: SUMMARY[3].icon,
+      note: `${appCount} applications submitted`,
+    },
+  ];
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {SUMMARY.map((s, i) => (
+      {summary.map((s, i) => (
         <StatCard key={i} {...s} />
       ))}
     </div>
   );
 }
 
-function ResumeAnalysisCard() {
+function ResumeAnalysisCard({ resume }) {
+  const navigate = useNavigate();
+  const hasResume = resume?.hasResume;
+  const atsScore = hasResume ? resume.atsScore : 0;
+  const status = hasResume ? "Active for Placements" : "No Resume Uploaded";
+  const lastAnalyzed = hasResume
+    ? resume.uploadedAtLabel || "Recent"
+    : "Not scanned yet";
+
   return (
     <Card className="mb-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-display text-lg font-semibold text-ink">Resume Analysis</h3>
-        <Pill tone="teal">
-          <CheckCircle2 size={12} /> {RESUME_ANALYSIS.status}
+        <Pill tone={hasResume ? "teal" : "coral"}>
+          {hasResume && <CheckCircle2 size={12} />} {status}
         </Pill>
       </div>
       <div className="flex flex-col sm:flex-row sm:items-center gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center font-mono text-lg font-semibold shrink-0 bg-amber-soft text-amber-dark border-[3px] border-amber">
-            {RESUME_ANALYSIS.score}
+          <div
+            className={`w-16 h-16 rounded-full flex items-center justify-center font-mono text-lg font-semibold shrink-0 ${
+              hasResume
+                ? "bg-amber-soft text-amber-dark border-[3px] border-amber"
+                : "bg-paper-dim text-ink-faint border-[3px] border-line"
+            }`}
+          >
+            {hasResume ? atsScore : "—"}
           </div>
           <div>
             <div className="font-body text-sm text-ink">ATS Score</div>
-            <div className="font-body text-xs text-ink-faint">out of 100</div>
+            <div className="font-body text-xs text-ink-faint">
+              {hasResume ? "out of 100" : "Upload to scan"}
+            </div>
           </div>
         </div>
         <div className="flex-1">
           <div className="font-body text-xs text-ink-faint">Last analyzed</div>
-          <div className="font-body text-sm text-ink-soft">{RESUME_ANALYSIS.lastAnalyzed}</div>
+          <div className="font-body text-sm text-ink-soft">{lastAnalyzed}</div>
         </div>
-        <Button variant="primary">
-          View Analysis <ChevronRight size={15} />
+        <Button variant="primary" onClick={() => navigate("/resume")}>
+          {hasResume ? "View Analysis" : "Upload Resume"} <ChevronRight size={15} />
         </Button>
       </div>
     </Card>
@@ -78,6 +140,8 @@ function ResumeAnalysisCard() {
 }
 
 function CareerRecommendations() {
+  const navigate = useNavigate();
+
   return (
     <Card className="mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -103,7 +167,11 @@ function CareerRecommendations() {
                 <span className="font-mono text-xs font-medium text-ink-soft">{r.match}%</span>
               </div>
             </div>
-            <Button variant="ghost" className="w-full justify-center !py-2 !text-xs">
+            <Button
+              variant="ghost"
+              className="w-full justify-center !py-2 !text-xs"
+              onClick={() => navigate(`/skill-gap?role=${encodeURIComponent(r.role)}`)}
+            >
               View Roadmap <ArrowRight size={13} />
             </Button>
           </div>
@@ -114,6 +182,8 @@ function CareerRecommendations() {
 }
 
 function RecommendedCompanies() {
+  const navigate = useNavigate();
+
   return (
     <Card className="mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -139,7 +209,11 @@ function RecommendedCompanies() {
               {c.eligible ? <CheckCircle2 size={11} /> : null}{" "}
               {c.eligible ? "Eligible" : "Not Eligible"}
             </Pill>
-            <Button variant="ghost" className="w-full justify-center !py-2 !text-xs mt-3">
+            <Button
+              variant="ghost"
+              className="w-full justify-center !py-2 !text-xs mt-3"
+              onClick={() => navigate("/jobs")}
+            >
               View Details <ArrowRight size={13} />
             </Button>
           </div>
@@ -149,41 +223,65 @@ function RecommendedCompanies() {
   );
 }
 
-function RecentApplications() {
+function RecentApplications({ applications = [] }) {
+  const navigate = useNavigate();
+
   const columns = [
     { key: "company", label: "Company", className: "font-medium text-ink" },
     { key: "role", label: "Job Role", className: "text-ink-soft" },
-    { key: "date", label: "Applied Date", className: "font-mono text-xs text-ink-soft" },
+    {
+      key: "appliedDate",
+      label: "Applied Date",
+      className: "font-mono text-xs text-ink-soft",
+      render: (r) => r.appliedDateLabel || r.appliedDate || r.date,
+    },
     {
       key: "status",
       label: "Status",
-      render: (row) => <Pill tone={STATUS_TONE[row.status]}>{row.status}</Pill>,
+      render: (row) => <Pill tone={STATUS_TONE[row.status] || "neutral"}>{row.status}</Pill>,
     },
   ];
+
+  const rows = applications.length > 0 ? applications.slice(0, 5) : APPLICATIONS;
 
   return (
     <Card padded={false}>
       <div className="flex items-center justify-between p-5 pb-0 mb-1">
         <h3 className="font-display text-lg font-semibold text-ink">Recent Applications</h3>
-        <button type="button" className="font-body text-xs underline text-ink-faint">
+        <button
+          type="button"
+          onClick={() => navigate("/applications")}
+          className="font-body text-xs underline text-ink-faint hover:text-ink cursor-pointer"
+        >
           View all
         </button>
       </div>
-      <DataTable columns={columns} rows={APPLICATIONS} />
+      <DataTable columns={columns} rows={rows} />
       <div className="h-4" />
     </Card>
   );
 }
 
 export default function StudentDashboard() {
+  const [resume, setResume] = useState(getResumeData());
+  const [applications, setApplications] = useState(getStudentApplications());
+
+  useEffect(() => {
+    const unsub = subscribe(() => {
+      setResume(getResumeData());
+      setApplications(getStudentApplications());
+    });
+    return () => unsub();
+  }, []);
+
   return (
     <>
       <WelcomeSection />
-      <SummaryCards />
-      <ResumeAnalysisCard />
+      <SummaryCards resume={resume} applications={applications} />
+      <ResumeAnalysisCard resume={resume} />
       <CareerRecommendations />
       <RecommendedCompanies />
-      <RecentApplications />
+      <RecentApplications applications={applications} />
     </>
   );
 }
