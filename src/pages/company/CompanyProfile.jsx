@@ -123,13 +123,13 @@ export default function CompanyProfile() {
         <div className="h-32 sm:h-36 bg-gradient-to-r from-ink via-[#183126] to-teal relative" />
 
         <div className="px-5 sm:px-8 pb-6 pt-0">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 sm:-mt-14 mb-2">
-            <div className="flex flex-col sm:flex-row sm:items-end gap-4 min-w-0">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-amber-soft text-amber-dark border-4 border-card shadow-md flex items-center justify-center font-display text-2xl sm:text-3xl font-bold shrink-0 z-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2 pt-1 sm:pt-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 min-w-0">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 -mt-10 sm:-mt-14 rounded-2xl bg-amber-soft text-amber-dark border-4 border-card shadow-md flex items-center justify-center font-display text-2xl sm:text-3xl font-bold shrink-0 z-10">
                 {profile.shortName || getInitials(profile.companyName)}
               </div>
 
-              <div className="pt-1 sm:pb-1 min-w-0">
+              <div className="min-w-0">
                 <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink leading-tight">
                   {profile.companyName}
                 </h1>
@@ -147,7 +147,7 @@ export default function CompanyProfile() {
               </div>
             </div>
 
-            <div className="shrink-0 pt-2 sm:pt-0 sm:pb-1">
+            <div className="shrink-0">
               {!isEditing ? (
                 <Button
                   variant="ghost"
