@@ -79,5 +79,55 @@ router.put("/:id", async (req, res) => {
     }
 });
 
+//user ID
+router.get("/user/:userId", async (req, res) => {
+    try {
+        const student = await Student.findOne({
+            userId: req.params.userId
+        });
 
+        if (!student) {
+            return res.status(404).json({
+                message: "Student profile not found"
+            });
+        }
+
+        res.json(student);
+
+    } catch (error) {
+        console.error("GET STUDENT BY USER ERROR:", error);
+
+        res.status(500).json({
+            message: error.message
+        });
+    }
+});
+
+router.put("/user/:userId", async (req, res) => {
+    try {
+        const student = await Student.findOneAndUpdate(
+            { userId: req.params.userId },
+            req.body,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!student) {
+            return res.status(404).json({
+                message: "Student profile not found"
+            });
+        }
+
+        res.json(student);
+
+    } catch (error) {
+        console.error("UPDATE STUDENT BY USER ERROR:", error.message);
+
+        res.status(400).json({
+            message: error.message
+        });
+    }
+});
 module.exports = router;

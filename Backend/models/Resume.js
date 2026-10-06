@@ -53,7 +53,7 @@ const resumeSchema = new mongoose.Schema(
             required: true
         },
 
-        fileName: {
+        filename: {
             type: String,
             required: true
         },
@@ -69,16 +69,13 @@ const resumeSchema = new mongoose.Schema(
         },
 
         fileSize: {
-            type: Number
+            type: Number,
+            required: true
         },
 
-        fileType: {
-            type: String
-        },
-
-        uploadedAt: {
-            type: Date,
-            default: Date.now
+        mimeType: {
+            type: String,
+            required: true
         },
 
         isCurrent: {
