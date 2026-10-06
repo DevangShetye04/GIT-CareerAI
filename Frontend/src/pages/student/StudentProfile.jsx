@@ -1,3 +1,4 @@
+import { useAuth } from "../../context/AuthContext.jsx";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -26,6 +27,8 @@ import {
 } from "../../services/studentService.js";
 
 export default function StudentProfile() {
+  const { user } = useAuth();
+  const userId = user?.id;
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(null);
@@ -38,13 +41,13 @@ export default function StudentProfile() {
   const [successMsg, setSuccessMsg] = useState("");
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+  /*useEffect(() => {
   async function loadProfile() {
     try {
       setLoading(true);
       setError("");
 
-      const data = await fetchStudentProfile();
+      const data = await fetchStudentProfile(userId);
 
       setProfile(data);
       setFormData(data);
@@ -57,7 +60,34 @@ export default function StudentProfile() {
   }
 
   loadProfile();
-}, []);
+}, []);*/
+  useEffect(() => {
+    async function loadProfile() {
+        try {
+            setLoading(true);
+            setError("");
+
+            if (!user?.id) {
+                throw new Error("User is not logged in");
+            }
+
+            const data = await fetchStudentProfile(user.id);
+
+            setProfile(data);
+            setFormData(data);
+
+        } catch (error) {
+            console.error("Failed to load profile:", error);
+            setError(error.message || "Failed to load student profile");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    if (user?.id) {
+        loadProfile();
+    }
+}, [user]);
 
   function handleChange(field, value) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -130,11 +160,27 @@ export default function StudentProfile() {
   try {
     setError("");
 
-    const updatedStudent = await saveStudentProfile({
+    /*const updatedStudent = await saveStudentProfile({
       ...formData,
       cgpa: Number(formData.cgpa),
       backlogs: Number(formData.backlogs) || 0,
-    });
+      userId,
+      profile,
+    });*/
+
+
+    if (!userId) {
+    setError("User is not logged in");
+    return;
+    }
+    const updatedStudent = await saveStudentProfile(
+    userId,
+    {
+        ...formData,
+        cgpa: Number(formData.cgpa),
+        backlogs: Number(formData.backlogs) || 0,
+    }
+);
 
     const updatedProfile = {
       ...formData,

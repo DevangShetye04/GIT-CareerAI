@@ -9,7 +9,7 @@ const STORAGE_KEYS = {
 
 const MOCK_LATENCY_MS = 600;
 
-const SEED_USERS = [
+/*const SEED_USERS = [
   {
     id: "student-001",
     role: ROLES.STUDENT,
@@ -33,7 +33,34 @@ const SEED_USERS = [
     year: "4th Year",
     designation: "Student",
     college: "Gharda Institute of Technology",
+  },*/
+  const SEED_USERS = [
+  {
+    id: "user-1",
+    role: ROLES.STUDENT,
+    email: "demo@git.edu",
+    password: "password123",
+    name: "Devang Shetye",
+    fullName: "Devang Shetye",
+    branch: "Computer Engineering",
+    year: "4th Year",
+    designation: "Student",
+    college: "Gharda Institute of Technology",
   },
+
+  {
+    id: "student-001",
+    role: ROLES.STUDENT,
+    email: "student@git.edu",
+    password: "student123",
+    name: "Student",
+    fullName: "Student",
+    branch: "Computer Engineering",
+    year: "4th Year",
+    designation: "Student",
+    college: "Gharda Institute of Technology",
+  },
+
   {
     id: "company-001",
     role: ROLES.COMPANY,
@@ -94,7 +121,7 @@ function migrateUserRecord(user) {
   return user;
 }
 
-const AUTH_VERSION = "2.1";
+const AUTH_VERSION = "2.2";
 const AUTH_VERSION_KEY = "git_careerai_auth_version";
 
 function checkAuthVersion() {

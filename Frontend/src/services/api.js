@@ -102,3 +102,43 @@ export const uploadResumeFile = async (studentId, file) => {
 
     return await response.json();
 };
+
+// User ID
+export const getStudentByUserId = async (userId) => {
+    const response = await fetch(
+        `${API_URL}/students/user/${encodeURIComponent(userId)}`
+    );
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+
+        throw new Error(
+            error.message || "Failed to fetch student"
+        );
+    }
+
+    return await response.json();
+};
+
+export const updateStudentByUserId = async (userId, studentData) => {
+    const response = await fetch(
+        `${API_URL}/students/user/${encodeURIComponent(userId)}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(studentData),
+        }
+    );
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+
+        throw new Error(
+            error.message || "Failed to update student"
+        );
+    }
+
+    return await response.json();
+};

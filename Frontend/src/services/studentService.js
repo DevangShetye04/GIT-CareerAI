@@ -1,6 +1,6 @@
 import {
-    getStudent,
-    updateStudent,
+    getStudentByUserId,
+    updateStudentByUserId,
     getResume,
     getATSAnalysis,
     uploadResumeFile,
@@ -31,91 +31,7 @@ const STORAGE_KEYS = {
 };
 
 const DATA_VERSION = "2.2";
-/*
-const MONGO_STUDENT_ID = "6abd7617a5182975b543e3c6";
 
-export async function fetchStudentProfile() {
-    const student = await getStudent(MONGO_STUDENT_ID);
-
-    return {
-        id: student._id,
-
-        fullName: student.name || "",
-        email: student.email || "",
-
-        phone: student.phone || "",
-        location: student.location || "",
-
-        college: student.college || "",
-        branch: student.branch || "",
-
-        graduationYear: student.graduationYear || "",
-        semester: student.semester || "",
-
-        cgpa: student.cgpa ?? "",
-        backlogs: student.backlogs ?? 0,
-
-        rollNo: student.rollNo || "",
-
-        technicalSkills: student.skills || [],
-        softSkills: student.softSkills || [],
-
-        projects: student.projects || [],
-        experience: student.experience || [],
-
-        preferences: student.preferences || {
-            preferredRole: "",
-            targetPackage: "",
-            workModes: [],
-            preferredLocations: [],
-        },
-    };
-}
-
-
-export async function saveStudentProfile(profile) {
-    const studentData = {
-        name: profile.fullName,
-        email: profile.email,
-
-        phone: profile.phone,
-        location: profile.location,
-
-        college: profile.college,
-        branch: profile.branch,
-
-        graduationYear:
-            Number(profile.graduationYear) || undefined,
-
-        semester: profile.semester,
-
-        cgpa:
-            profile.cgpa === ""
-                ? undefined
-                : Number(profile.cgpa),
-
-        backlogs:
-            Number(profile.backlogs) || 0,
-
-        rollNo: profile.rollNo,
-
-        skills: profile.technicalSkills || [],
-        softSkills: profile.softSkills || [],
-
-        projects: profile.projects || [],
-        experience: profile.experience || [],
-
-        preferences: profile.preferences || {},
-    };
-
-    const updatedStudent = await updateStudent(
-        MONGO_STUDENT_ID,
-        studentData
-    );
-
-    return updatedStudent;
-}
-*/
 function checkStorageVersion() {
   try {
     const current = localStorage.getItem(STORAGE_KEYS.VERSION);
@@ -233,10 +149,48 @@ export function updateStudentProfile(updates) {
 
 //exp
 // MongoDB Student ID
-const MONGO_STUDENT_ID = "6abd7617a5182975b543e3c6";
+//const MONGO_STUDENT_ID = "6abd7617a5182975b543e3c6";
 
-export async function fetchStudentProfile() {
+/*export async function fetchStudentProfile() {
     const student = await getStudent(MONGO_STUDENT_ID);
+
+    return {
+        id: student._id,
+
+        fullName: student.name || "",
+        email: student.email || "",
+
+        phone: student.phone || "",
+        location: student.location || "",
+
+        college: student.college || "",
+        branch: student.branch || "",
+
+        graduationYear: student.graduationYear || "",
+        semester: student.semester || "",
+
+        cgpa: student.cgpa ?? "",
+        backlogs: student.backlogs ?? 0,
+
+        rollNo: student.rollNo || "",
+
+        technicalSkills: student.skills || [],
+        softSkills: student.softSkills || [],
+
+        projects: student.projects || [],
+        experience: student.experience || [],
+
+        preferences: student.preferences || {
+            preferredRole: "",
+            targetPackage: "",
+            workModes: [],
+            preferredLocations: [],
+        },
+    };
+}*/
+
+export async function fetchStudentProfile(userId) {
+    const student = await getStudentByUserId(userId);
 
     return {
         id: student._id,
@@ -273,7 +227,7 @@ export async function fetchStudentProfile() {
     };
 }
 
-export async function saveStudentProfile(profile) {
+/*export async function saveStudentProfile(profile) {
     const studentData = {
         name: profile.fullName,
         email: profile.email,
@@ -306,6 +260,46 @@ export async function saveStudentProfile(profile) {
     );
 
     return updatedStudent;
+}*/
+export async function saveStudentProfile(userId, profile) {
+    const studentData = {
+        name: profile.fullName,
+        email: profile.email,
+
+        phone: profile.phone,
+        location: profile.location,
+
+        college: profile.college,
+        branch: profile.branch,
+
+        graduationYear:
+            Number(profile.graduationYear) || undefined,
+
+        semester: profile.semester,
+
+        cgpa:
+            profile.cgpa === ""
+                ? undefined
+                : Number(profile.cgpa),
+
+        backlogs:
+            Number(profile.backlogs) || 0,
+
+        rollNo: profile.rollNo,
+
+        skills: profile.technicalSkills || [],
+        softSkills: profile.softSkills || [],
+
+        projects: profile.projects || [],
+        experience: profile.experience || [],
+
+        preferences: profile.preferences || {},
+    };
+
+    return await updateStudentByUserId(
+        userId,
+        studentData
+    );
 }
 
 // Exp Finished
@@ -385,7 +379,7 @@ export function removeResume() {
 //const MONGO_STUDENT_ID = "6abd7617a5182975b543e3c6";
 
 
-export async function fetchResumeData() {
+/*export async function fetchResumeData() {
 
     const resumeResponse =
         await getResume(MONGO_STUDENT_ID);
@@ -397,6 +391,55 @@ export async function fetchResumeData() {
     const resume = resumeResponse.data;
     const analysis = analysisResponse.data;
 
+
+    return {
+        hasResume: true,
+
+        id: resume._id,
+
+        fileName: resume.originalName,
+
+        fileSize: resume.fileSize,
+
+        uploadedAt: resume.uploadedAt,
+
+        uploadedAtLabel: new Date(
+            resume.uploadedAt
+        ).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        }),
+
+        atsScore: analysis.overallScore,
+
+        breakdown: analysis.breakdown,
+
+        recommendations:
+            analysis.recommendations || [],
+
+        compatibilityByRole:
+            analysis.compatibilityByRole || {},
+
+        lastAnalyzed:
+            analysis.lastAnalyzed,
+    };
+}*/
+
+export async function fetchResumeData(userId) {
+
+    const student = await getStudentByUserId(userId);
+
+    const studentId = student._id;
+
+    const resumeResponse =
+        await getResume(studentId);
+
+    const analysisResponse =
+        await getATSAnalysis(studentId);
+
+    const resume = resumeResponse.data;
+    const analysis = analysisResponse.data;
 
     return {
         hasResume: true,
@@ -447,10 +490,24 @@ export function getResumeData() {
     };
 }
 
-export async function uploadStudentResume(file) {
+/*export async function uploadStudentResume(file) {
 
     const response = await uploadResumeFile(
         MONGO_STUDENT_ID,
+        file
+    );
+
+    return response.data.resume;
+}*/
+
+export async function uploadStudentResume(userId, file) {
+
+    const student = await getStudentByUserId(userId);
+
+    const studentId = student._id;
+
+    const response = await uploadResumeFile(
+        studentId,
         file
     );
 

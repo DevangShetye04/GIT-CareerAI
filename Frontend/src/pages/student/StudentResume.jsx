@@ -1,3 +1,4 @@
+import { useAuth } from "../../context/AuthContext.jsx";
 import { useState, useEffect, useRef } from "react";
 import {
   FileText,
@@ -29,8 +30,22 @@ import {
 } from "../../services/studentService.js";
 
 export default function StudentResume() {
+  const { user } = useAuth();
+
+  const userId = user?.id;
   //const [resume, setResume] = useState(getResumeData());
-  const [resume, setResume] = useState(null);
+  const [resume, setResume] = useState({
+    hasResume: false,
+    fileName: "",
+    fileSize: 0,
+    uploadedAt: null,
+    uploadedAtLabel: "",
+    atsScore: 0,
+    breakdown: {},
+    recommendations: [],
+    compatibilityByRole: {},
+    lastAnalyzed: null,
+});
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
@@ -45,13 +60,13 @@ export default function StudentResume() {
     return () => unsub();
   }, []);*/
 
-  useEffect(() => {
+  /*useEffect(() => {
 
     const loadResume = async () => {
 
         try {
 
-            const data = await fetchResumeData();
+            const data = await fetchResumeData(userId);
 
             setResume(data);
 
@@ -77,7 +92,36 @@ export default function StudentResume() {
 
     loadResume();
 
-}, []);
+}, []);*/
+
+useEffect(() => {
+    async function loadResume() {
+        try {
+            setIsLoading(true);
+            setUploadError("");
+
+            if (!userId) {
+                throw new Error("User is not logged in");
+            }
+
+            const data = await fetchResumeData(userId);
+
+            setResume(data);
+        } catch (error) {
+            console.error("Failed to load resume:", error);
+
+            setUploadError(
+                error.message || "Failed to load resume"
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    if (userId) {
+        loadResume();
+    }
+}, [userId]);
 
   const handleFileSelection = (e) => {
     const file = e.target.files?.[0];
@@ -164,12 +208,12 @@ export default function StudentResume() {
         setIsUploading(true);
 
         const uploadedResume =
-            await uploadStudentResume(file);
+    await uploadStudentResume(userId, file);
 
 
         // Reload resume + ATS data
         const updatedResume =
-            await fetchResumeData();
+    await fetchResumeData(userId);
 
 
         setResume(updatedResume);
@@ -522,10 +566,10 @@ export default function StudentResume() {
               </h3>
             </div>
             <ul className="space-y-3">
-              {(resume.improvements || []).map((imp, idx) => (
+              {(resume.recommendations || []).map((item, idx) => ( 
                 <li key={idx} className="flex items-start gap-2.5 text-xs font-body text-ink-soft">
                   <ArrowUpRight size={15} className="text-amber-dark shrink-0 mt-0.5" />
-                  <span>{imp}</span>
+                  <span>{item.message}</span>
                 </li>
               ))}
             </ul>

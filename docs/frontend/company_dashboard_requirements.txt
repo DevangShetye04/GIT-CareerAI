@@ -1,0 +1,517 @@
+GIT CareerAI – COMPANY DASHBOARD FRONTEND REQUIREMENTS
+
+Project:
+GIT CareerAI – AI-Powered Career & Placement Intelligence Platform
+
+Module:
+Company Dashboard
+
+Purpose:
+The Company Dashboard is the main landing page for a company after successful login. It should give the company a quick overview of its jobs, applicants, eligible candidates, shortlisted candidates, and recent activity.
+
+IMPORTANT:
+- Use the existing Student Module UI as the design reference.
+- Maintain the same colors, typography, sidebar style, navbar, cards, buttons, spacing, and overall design language.
+- Use React.js and Tailwind CSS.
+- Use mock/dummy data for now.
+- Do not integrate backend APIs yet.
+- Keep the components ready for future API integration.
+- Make the dashboard responsive for desktop, tablet, and mobile.
+
+==================================================
+1. PAGE STRUCTURE
+==================================================
+
+The Company Dashboard should contain:
+
+1. Sidebar
+2. Top Navbar
+3. Welcome/Header Section
+4. Summary Cards
+5. Jobs Overview
+6. Recent Applicants
+7. Applicant/Eligibility Overview
+8. Recent Activity
+9. Quick Action Buttons
+
+==================================================
+2. SIDEBAR
+==================================================
+
+Sidebar navigation should contain:
+
+- Dashboard
+- Company Profile
+- Post Job
+- Manage Jobs
+- Applicants
+- Shortlisted Candidates
+- Notifications
+- Logout
+
+The Dashboard menu item should be highlighted when the company is on the dashboard.
+
+Use React Router for navigation.
+
+==================================================
+3. TOP NAVBAR
+==================================================
+
+Navbar should contain:
+
+- Company name
+- Company logo/avatar
+- Notification icon
+- Profile icon/dropdown
+
+Profile dropdown can contain:
+
+- My Profile
+- Settings (optional)
+- Logout
+
+==================================================
+4. WELCOME SECTION
+==================================================
+
+Display a welcome message.
+
+Example:
+
+"Welcome back, TCS! 👋"
+
+Subtitle:
+
+"Manage your job openings and find the right candidates for your organization."
+
+Also show a primary button:
+
+"+ Post New Job"
+
+Clicking the button should navigate to the Post Job page.
+
+==================================================
+5. SUMMARY CARDS
+==================================================
+
+Create 5 summary cards.
+
+Card 1:
+Title: Total Jobs
+Value: 5
+Description: Total jobs posted
+
+Card 2:
+Title: Active Jobs
+Value: 3
+Description: Currently active jobs
+
+Card 3:
+Title: Total Applicants
+Value: 120
+Description: Applications received
+
+Card 4:
+Title: Eligible Candidates
+Value: 85
+Description: Candidates meeting eligibility criteria
+
+Card 5:
+Title: Shortlisted
+Value: 20
+Description: Candidates shortlisted
+
+Each card should have:
+- Icon
+- Title
+- Large value
+- Small description
+- Optional link such as "View Details"
+
+Use reusable SummaryCard component.
+
+==================================================
+6. JOBS OVERVIEW
+==================================================
+
+Create a section titled:
+
+"Your Jobs"
+
+Display the company's recently posted jobs.
+
+Table columns:
+
+- Job Title
+- Location
+- Applicants
+- Eligible Candidates
+- Deadline
+- Status
+- Action
+
+Example data:
+
+Java Developer
+Location: Mumbai
+Applicants: 42
+Eligible: 30
+Deadline: 30 Sep 2026
+Status: Active
+
+Frontend Developer
+Location: Pune
+Applicants: 28
+Eligible: 20
+Deadline: 25 Sep 2026
+Status: Active
+
+Backend Developer
+Location: Bangalore
+Applicants: 15
+Eligible: 10
+Deadline: 20 Sep 2026
+Status: Closed
+
+Status should use badges:
+
+Active
+Closed
+Draft
+
+Action options:
+
+- View
+- Edit
+- Manage Applicants
+
+Add a button:
+
+"View All Jobs"
+
+==================================================
+7. RECENT APPLICANTS
+==================================================
+
+Create a section titled:
+
+"Recent Applicants"
+
+Display the latest applicants.
+
+Table/card information:
+
+- Candidate Name
+- Job Role
+- CGPA
+- ATS Score
+- Eligibility
+- Application Status
+- Action
+
+Example:
+
+Rahul Patil
+Java Developer
+CGPA: 8.2
+ATS Score: 89%
+Eligibility: Eligible
+Status: Applied
+
+Amit Shah
+Java Developer
+CGPA: 7.6
+ATS Score: 82%
+Eligibility: Eligible
+Status: Shortlisted
+
+Priya More
+Java Developer
+CGPA: 6.8
+ATS Score: 91%
+Eligibility: Not Eligible
+Status: Rejected
+
+Action:
+
+"View Candidate"
+
+Clicking it should navigate to the Candidate Details page.
+
+Add:
+
+"View All Applicants"
+
+==================================================
+8. ELIGIBILITY / ATS OVERVIEW
+==================================================
+
+Create a visual section showing candidate distribution.
+
+Example:
+
+Total Applicants: 120
+
+Eligible: 85
+Not Eligible: 35
+
+You can use:
+
+- Progress bar
+OR
+- Donut/pie chart
+
+Also display:
+
+Average ATS Match Score: 78%
+
+Highest ATS Match Score: 96%
+
+This section is only for frontend visualization using mock data.
+
+==================================================
+9. RECENT ACTIVITY
+==================================================
+
+Create a section titled:
+
+"Recent Activity"
+
+Example activities:
+
+- Rahul Patil applied for Java Developer
+- Amit Shah was shortlisted for Java Developer
+- 5 new applicants applied for Frontend Developer
+- Backend Developer job was closed
+- New company profile information was updated
+
+Display activities with:
+
+- Icon
+- Activity description
+- Date/time
+
+Example:
+
+"Rahul Patil applied for Java Developer"
+"10 minutes ago"
+
+==================================================
+10. QUICK ACTIONS
+==================================================
+
+Create quick action buttons/cards:
+
+1. Post New Job
+2. Manage Jobs
+3. View Applicants
+4. Shortlisted Candidates
+5. Company Profile
+
+These should navigate to their respective pages.
+
+==================================================
+11. RESPONSIVE DESIGN
+==================================================
+
+The dashboard must work properly on:
+
+- Desktop
+- Laptop
+- Tablet
+- Mobile
+
+On smaller screens:
+
+- Sidebar should become collapsible.
+- Tables should become horizontally scrollable or convert into cards.
+- Summary cards should stack properly.
+- No text or buttons should overflow.
+
+==================================================
+12. MOCK DATA
+==================================================
+
+Use mock data for the current frontend.
+
+Example:
+
+const companyStats = {
+    totalJobs: 5,
+    activeJobs: 3,
+    totalApplicants: 120,
+    eligibleCandidates: 85,
+    shortlistedCandidates: 20
+};
+
+Example job:
+
+const jobs = [
+    {
+        title: "Java Developer",
+        location: "Mumbai",
+        applicants: 42,
+        eligibleCandidates: 30,
+        deadline: "30 Sep 2026",
+        status: "Active"
+    }
+];
+
+Example applicant:
+
+const applicants = [
+    {
+        name: "Rahul Patil",
+        role: "Java Developer",
+        cgpa: 8.2,
+        atsScore: 89,
+        eligible: true,
+        status: "Applied"
+    }
+];
+
+==================================================
+13. COMPONENT STRUCTURE
+==================================================
+
+Create reusable components where possible.
+
+Suggested structure:
+
+CompanyDashboard/
+    CompanyDashboard.jsx
+    components/
+        CompanySidebar.jsx
+        CompanyNavbar.jsx
+        SummaryCard.jsx
+        JobsOverview.jsx
+        RecentApplicants.jsx
+        EligibilityOverview.jsx
+        RecentActivity.jsx
+        QuickActions.jsx
+
+The exact structure can be changed if the existing project structure follows a different convention.
+
+==================================================
+14. NAVIGATION
+==================================================
+
+The following routes should be planned:
+
+/company/dashboard
+/company/profile
+/company/jobs
+/company/jobs/create
+/company/jobs/:id
+/company/applicants
+/company/applicants/:id
+/company/shortlisted
+/company/notifications
+
+For this task, only the Company Dashboard UI needs to be completed.
+
+Buttons can navigate to placeholder pages/routes if those pages are not developed yet.
+
+==================================================
+15. UI/UX REQUIREMENTS
+==================================================
+
+The dashboard should look professional enough for a final-year engineering project presentation.
+
+Requirements:
+
+- Clean layout
+- Consistent spacing
+- Professional cards
+- Clear headings
+- Responsive tables
+- Proper status badges
+- Loading state design can be added
+- Empty state design can be added
+- Hover effects can be added
+- Avoid excessive animations
+- Avoid unnecessary features
+
+==================================================
+16. IMPORTANT LOGIC TO DISPLAY
+==================================================
+
+Eligibility and ATS Score are DIFFERENT.
+
+Eligibility is based on company-defined criteria such as:
+
+- Minimum CGPA
+- Branch
+- Graduation year
+- Maximum backlogs
+
+ATS/Compatibility Score is based on:
+
+- Student resume
+- Job description
+- Required skills
+- Matching keywords
+
+Example:
+
+Candidate:
+CGPA: 8.2
+ATS Score: 89%
+Eligibility: Eligible
+
+Another candidate could have:
+
+CGPA: 6.8
+ATS Score: 91%
+Eligibility: Not Eligible
+
+The dashboard should display these values separately.
+
+==================================================
+17. ACCEPTANCE CRITERIA
+==================================================
+
+The Company Dashboard will be considered complete when:
+
+[ ] Company sidebar is implemented
+[ ] Navbar is implemented
+[ ] Welcome section is implemented
+[ ] Post New Job button is present
+[ ] All 5 summary cards are implemented
+[ ] Jobs overview table is implemented
+[ ] Recent applicants section is implemented
+[ ] ATS/eligibility overview is implemented
+[ ] Recent activity section is implemented
+[ ] Quick action buttons are implemented
+[ ] Mock data is used
+[ ] Responsive design works
+[ ] Existing Student Module design is followed
+[ ] Navigation links/routes are prepared
+[ ] Code is component-based and reusable
+[ ] No backend/API integration is required at this stage
+
+==================================================
+18. DEVELOPMENT INSTRUCTION
+==================================================
+
+Do not modify the completed Student Module unnecessarily.
+
+Build the Company Dashboard as a separate module while reusing existing components where possible.
+
+Before creating new UI components, check whether an equivalent component already exists in the project.
+
+After completing the dashboard:
+
+1. Test all buttons and navigation.
+2. Test desktop and mobile layouts.
+3. Check for console errors.
+4. Make sure mock data displays correctly.
+5. Commit the changes to the feature branch.
+
+Suggested branch:
+
+feature/company-dashboard
+
+Suggested commit message:
+
+"Add company dashboard frontend"
