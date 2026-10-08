@@ -12,7 +12,25 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
     try {
-        const job = await Job.create(req.body);
+        const payload = { ...req.body };
+
+        if (!payload.companyId && payload.companyUserId) {
+            const company = await Company.findOne({
+                userId: payload.companyUserId
+            });
+
+            if (!company) {
+                return res.status(404).json({
+                    message: "Company profile not found"
+                });
+            }
+
+            payload.companyId = company._id;
+        }
+
+        delete payload.companyUserId;
+
+        const job = await Job.create(payload);
 
         res.status(201).json(job);
 
@@ -20,6 +38,28 @@ router.post("/", async (req, res) => {
         console.error("CREATE JOB ERROR:", error);
 
         res.status(400).json({
+            message: error.message
+        });
+    }
+});
+
+// GET ALL JOBS
+// GET /api/jobs
+router.get("/", async (req, res) => {
+    try {
+        const filter = {};
+        if (req.query.status) {
+            filter.status = req.query.status;
+        }
+
+        const jobs = await Job.find(filter)
+            .populate("companyId")
+            .sort({ createdAt: -1 });
+
+        res.json(jobs);
+    } catch (error) {
+        console.error("GET JOBS ERROR:", error);
+        res.status(500).json({
             message: error.message
         });
     }

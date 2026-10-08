@@ -136,6 +136,49 @@ router.post(
     }
 );
 
+// -----------------------------
+// Delete Current Resume
+// DELETE /api/students/:studentId/resume
+// -----------------------------
+
+router.delete("/:studentId/resume", async (req, res) => {
+    try {
+        const resume = await Resume.findOne({
+            studentId: req.params.studentId,
+            isCurrent: true
+        }).sort({ createdAt: -1 });
+
+        if (!resume) {
+            return res.status(404).json({
+                message: "No resume found"
+            });
+        }
+
+        if (resume.filePath) {
+            try {
+                await fs.promises.unlink(resume.filePath);
+            } catch (error) {
+                if (error.code !== "ENOENT") {
+                    throw error;
+                }
+            }
+        }
+
+        await ATSAnalysis.deleteMany({ resumeId: resume._id });
+        await Resume.deleteOne({ _id: resume._id });
+
+        res.json({
+            success: true,
+            message: "Resume deleted successfully"
+        });
+    } catch (error) {
+        console.error("DELETE RESUME ERROR:", error);
+        res.status(500).json({
+            message: error.message
+        });
+    }
+});
+
 
 // -----------------------------
 // Get Current Resume
